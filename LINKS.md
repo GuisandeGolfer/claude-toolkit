@@ -1,9 +1,9 @@
 # Links
 
 ## Projects and examples on this machine
-- `~/Desktop/bo1z-mac`: the full worked example (Electron offline mirror, gamepad shim, perf, packaging,
+- `~/Desktop/bo1z-mac` (author's machine, not shared): the full worked example (Electron offline mirror, gamepad shim, perf, packaging,
   docs/PERF.md, docs/METAL-SPIKE.md). A git repo.
-- `~/Desktop/bo1z-assets`: BO1 Zombies retail-layout assets plus `download_assets.py`, a manifest-driven,
+- `~/Desktop/bo1z-assets` (author's machine, not shared): BO1 Zombies retail-layout assets plus `download_assets.py`, a manifest-driven,
   SHA-256-verified downloader for chunked brotli packs (`Accept-Encoding: identity` trick).
 
 ## BO1 Zombies / vel.gg
@@ -23,7 +23,3 @@
 - https://web.dev/articles/coop-coep: cross-origin isolation (needed for SharedArrayBuffer/pthreads)
 - https://github.com/WebAssembly/js-promise-integration: JSPI (not in WebKit as of Safari 26.6)
 - https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system: OPFS
-
-## Machines (see memory for details)
-- omarchy-desktop: Tailscale, `ssh diegog@omarchy-desktop`
-- Mac: `diegos-macbook-pro` (Remote Login on, so omarchy can SSH in)

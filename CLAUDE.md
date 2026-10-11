@@ -9,7 +9,7 @@ Origin: the bo1z-mac project (2026-10-10), which wrapped the vel.gg/bo1z WASM ga
 | Script | Use it when | Example |
 |---|---|---|
 | `cdp.mjs` | You need to drive or inspect a Chromium/Electron page: eval JS, send **trusted** key/mouse input (counts as a user gesture), screenshot, stream console | `CDP_PORT=9333 node cdp.mjs eval 'crossOriginIsolated'` · `node cdp.mjs key Space " " 32` · `node cdp.mjs click 756 491` · `node cdp.mjs shot /tmp/s.jpg` · `node cdp.mjs console 30 reload --exclude='WEB_GL_'` |
-| `dir-compare.sh` | You're comparing two folders, local or remote over SSH/Tailscale: identical, same files in a different layout, or real differences | `dir-compare.sh ~/Desktop/x diegog@omarchy-desktop:/home/diegog/workspace/x` |
+| `dir-compare.sh` | You're comparing two folders, local or remote over SSH/Tailscale: identical, same files in a different layout, or real differences | `dir-compare.sh ~/Desktop/x me@other-machine:/home/me/workspace/x` |
 | `site-recon.py` | Before wrapping, mirroring or porting a web app: map its JS/worker/wasm graph, isolation headers, and the browser features it needs | `site-recon.py https://vel.gg/bo1z/ --depth 3 --save /tmp/site` |
 | `blob-strings.py` | You need configs or scripts buried in binary archives (raw bytes plus every embedded zlib stream, and zip members) | `blob-strings.py 'bind MOUSE1' zone/**/*.ff` · `blob-strings.py '+frag' --zip main/*.iwd` |
 | `mirror-audit.py` | Checking an offline mirror: totals by host/status, misses, URL grep, coverage against a manifest | `mirror-audit.py "~/Library/Application Support/bo1z-mac/mirror" --grep wasm` |

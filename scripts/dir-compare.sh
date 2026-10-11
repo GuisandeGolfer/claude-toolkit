@@ -2,7 +2,7 @@
 # Compare two directory trees by SHA-256: same paths? same contents? moved files?
 # Either side may be remote ([user@]host:/path, via ssh; Tailscale hostnames work).
 #
-#   dir-compare.sh ~/Desktop/foo diegog@omarchy-desktop:/home/diegog/workspace/foo
+#   dir-compare.sh ~/Desktop/foo me@other-machine:/home/me/workspace/foo
 #   dir-compare.sh ./a ./b
 #
 # Output: identical / content-identical-but-different-layout / per-file differences.

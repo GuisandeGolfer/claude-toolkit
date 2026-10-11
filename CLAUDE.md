@@ -14,6 +14,7 @@ Origin: the bo1z-mac project (2026-10-10), which wrapped the vel.gg/bo1z WASM ga
 | `blob-strings.py` | You need configs or scripts buried in binary archives (raw bytes plus every embedded zlib stream, and zip members) | `blob-strings.py 'bind MOUSE1' zone/**/*.ff` · `blob-strings.py '+frag' --zip main/*.iwd` |
 | `mirror-audit.py` | Checking an offline mirror: totals by host/status, misses, URL grep, coverage against a manifest | `mirror-audit.py "~/Library/Application Support/bo1z-mac/mirror" --grep wasm` |
 | `wkwebview-probe.swift` | Before building a Tauri/WKWebView wrapper: does the app even run in WebKit? | `swift wkwebview-probe.swift https://site/ 40` |
+| `away` | Keeping a Mac awake with the **lid closed** (Remote Control sessions). Uses `pmset disablesleep`, with an optional auto-off. Shell functions `away-on [8h]`, `away-off`, `away-status` are in ~/.zshrc | `away on 8h` · `away status` · `away off` |
 
 ## Templates (`templates/`)
 **`electron-offline-mirror/`** turns any website into an offline desktop app. Electron loads the real
@@ -58,6 +59,12 @@ origin-relative paths all work unchanged, and you never have to reverse-engineer
   it under `bash`.
 - **Tailscale SSH policy may allow only certain users** ("tailnet policy does not permit you to SSH as
   user X"). Try the machine's real username before falling back to root.
+
+- **Amphetamine 5.3.2 lid protection doesn't survive opening the lid** (macOS 26): it's cleared on open and
+  re-armed only on the next session change, so open → close = sleep (`log show` says "sleep reason Clamshell
+  Sleep", with `setClamShellSleepDisable 0->2` arriving ms too late). Use `scripts/away`. Diagnose with
+  `/usr/bin/log show --predicate 'process == "kernel" AND eventMessage CONTAINS "clamshell"'`. Note that `log`
+  alone is a zsh builtin, so use `/usr/bin/log`.
 
 ## Links
 See [LINKS.md](LINKS.md).

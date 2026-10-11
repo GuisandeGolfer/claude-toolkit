@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Keep a Mac awake with the lid closed (e.g. for a Claude Code Remote Control session), reliably.
+#
+#   away on [duration]   block all system sleep, lid included; optional auto-off: 30m, 8h, 90s
+#   away off             restore normal sleep
+#   away status          show sleep block, lid protection, power source, pending auto-off
+#
+# Why not just Amphetamine: Amphetamine 5.3.2's lid protection gets cleared when the lid is opened and
+# isn't re-armed before the next close, so the Mac sleeps ("sleep reason Clamshell Sleep" in the log).
+# `pmset disablesleep` is a kernel setting that opening the lid doesn't reset.
+# Needs sudo (asks for your password). Keep it plugged in and out of bags while on.
+set -euo pipefail
+PIDFILE=/tmp/away-autooff.pid
+
+is_on()  { pmset -g | grep -q 'SleepDisabled[[:space:]]*1'; }
+on_ac()  { pmset -g batt | grep -q "AC Power"; }
+battery(){ pmset -g batt | grep -Eo '[0-9]+%' | head -1; }
+
+to_seconds() {  # 90s | 30m | 8h | plain seconds
+  local v=$1
+  case $v in
+    *h) echo $(( ${v%h} * 3600 ));; *m) echo $(( ${v%m} * 60 ));; *s) echo "${v%s}";;
+    ''|*[!0-9]*) echo "bad duration: $v (use e.g. 30m, 8h)" >&2; exit 2;; *) echo "$v";;
+  esac
+}
+
+cancel_timer() {
+  if [ -f "$PIDFILE" ]; then
+    sudo kill "$(cat "$PIDFILE")" 2>/dev/null || true
+    sudo rm -f "$PIDFILE"
+  fi
+}
+
+status() {
+  if is_on; then echo "away:    ON  (sleep fully disabled, lid closed included)"; else echo "away:    off (normal sleep)"; fi
+  if [ -f "$PIDFILE" ] && ps -p "$(cat "$PIDFILE")" >/dev/null 2>&1; then
+    echo "timer:   auto-off pending (pid $(cat "$PIDFILE"), started $(date -r "$PIDFILE" '+%H:%M'))"
+  fi
+  local lid; lid=$(ioreg -r -k AppleClamshellCausesSleep -d 4 | grep -Eo '"AppleClamshellCausesSleep" = (Yes|No)' | awk '{print $3}')
+  echo "lid:     closing it would sleep: ${lid:-unknown}$(is_on && echo ' (overridden by away)')"
+  if on_ac; then echo "power:   AC, battery $(battery)"; else echo "power:   BATTERY $(battery), plug in for long sessions"; fi
+}
+
+case "${1:-status}" in
+  on)
+    sudo -v   # ask for the password once, up front
+    sudo pmset -a disablesleep 1
+    cancel_timer
+    if [ -n "${2:-}" ]; then
+      secs=$(to_seconds "$2")
+      # Root-owned background job flips it back, even if this terminal closes.
+      sudo sh -c "nohup sh -c 'sleep $secs; pmset -a disablesleep 0; rm -f $PIDFILE' >/dev/null 2>&1 & echo \$! > $PIDFILE"
+      echo "auto-off in $2 (at $(date -v+"${secs}"S '+%H:%M'))"
+    fi
+    is_on && echo "✓ away ON: lid can be closed, Mac stays awake" || { echo "✗ failed to disable sleep"; exit 1; }
+    on_ac || echo "! on battery ($(battery)): it will drain; plug in if you can"
+    [ -z "${2:-}" ] && echo "  remember: away-off when you're back (or use: away-on 8h)"
+    ;;
+  off)
+    sudo -v
+    cancel_timer
+    sudo pmset -a disablesleep 0
+    is_on && { echo "✗ still on?"; exit 1; } || echo "✓ away off: normal sleep restored"
+    ;;
+  status) status ;;
+  *) sed -n '2,10p' "$0"; exit 2 ;;
+esac

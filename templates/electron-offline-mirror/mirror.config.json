@@ -2,6 +2,7 @@
   "appName": "my-offline-app",
   "startUrl": "https://example.com/",
   "scope": ["^https://example\\.com/"],
+  "pageKeys": ["^https://example\\.com/[^/.]*$"],
   "stub": [
     { "match": "^https://example\\.com/telemetry", "status": 204, "getStatus": 404 }
   ],

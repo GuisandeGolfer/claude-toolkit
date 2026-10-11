@@ -23,6 +23,7 @@ app.whenReady().then(() => {
   const mirror = createMirror(path.join(dataDir, 'mirror'), mode, {
     scope: config.scope.map(s => new RegExp(s)),
     stub: (config.stub ?? []).map(s => ({ ...s, match: new RegExp(s.match) })),
+    pageKeys: (config.pageKeys ?? []).map(s => new RegExp(s)),
   });
   session.defaultSession.protocol.handle('https', req => mirror.handle(req));
 

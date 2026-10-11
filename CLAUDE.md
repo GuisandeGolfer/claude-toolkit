@@ -42,7 +42,15 @@ origin-relative paths all work unchanged, and you never have to reverse-engineer
 - **net.fetch returns decoded bodies.** Drop `content-encoding`/`content-length`, then re-derive
   `content-length` from the stored body. Some loaders reject files without it ("Invalid download length").
 - **Cache 404s.** Apps probe optional files and accept 404, but an offline 504 crashes them.
-- **Page URLs with client-only query params** (`?perf=1`) miss offline. Key extensionless URLs by path only.
+- **Page URLs with client-only query params** (`?perf=1`) miss offline. Key **page** URLs by path only
+  (template: `pageKeys` regexes). Don't use "last segment has no dot" as the test: CDN chunks like
+  `file.br/0?v=x` match it, and changing the rule later orphans cache entries (bo1z-mac has `rekey-mirror.js`).
+- **Prefetching a site without running it:** replicate its downloader's URL rules exactly, then validate by
+  generating URLs for an already-cached item in `--offline` mode (every URL must hit). Watch for per-page
+  variants: worker scripts with `?map=` queries, assets keyed by both slug and internal name, `<video>`
+  streams requested with `Range` (store whole, slice on demand).
+- **`total += await f()` in a concurrent pool loses updates** (it reads `total` before the await). Use
+  `const x = await f(); total += x;`.
 - **Transports rename files** (`.br/<k>` chunks, `.kop` opus, `.dxs`, `?part=k`), so coverage checks need
   every suffix.
 - **rAF FPS ≠ game FPS.** Read the engine's own counter.

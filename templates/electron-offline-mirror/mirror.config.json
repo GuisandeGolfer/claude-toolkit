@@ -1,0 +1,11 @@
+{
+  "appName": "my-offline-app",
+  "startUrl": "https://example.com/",
+  "scope": ["^https://example\\.com/"],
+  "stub": [
+    { "match": "^https://example\\.com/telemetry", "status": 204, "getStatus": 404 }
+  ],
+  "perfOverlayRegex": null,
+  "width": 1440,
+  "height": 900
+}

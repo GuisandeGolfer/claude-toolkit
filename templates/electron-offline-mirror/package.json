@@ -1,0 +1,20 @@
+{
+  "name": "my-offline-app",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "offline": "electron . --offline",
+    "package": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dir dmg --arm64"
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "local.my-offline-app",
+    "files": ["main.js", "mirror.js", "preload.js", "gamepad-to-keys.js", "mirror.config.json"],
+    "mac": { "target": ["dir", "dmg"], "identity": null }
+  }
+}

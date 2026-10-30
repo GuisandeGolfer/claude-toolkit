@@ -1,9 +1,10 @@
+#!/usr/bin/env swift
 // wkwebview-probe.swift: open a URL in WKWebView (Safari's engine, the same one Tauri uses on macOS)
 // and print a JS expression's value every N seconds. Answers "does this web app work in WebKit?"
 // before you build a Tauri/WKWebView wrapper.
 //
-//   swift wkwebview-probe.swift <url> [seconds=60] [js-expression]
-//   swift wkwebview-probe.swift https://vel.gg/bo1z/kino 40 \
+//   ./scripts/wkwebview-probe.swift <url> [seconds=60] [js-expression]
+//   ./scripts/wkwebview-probe.swift https://vel.gg/bo1z/kino 40 \
 //     'JSON.stringify({coi: crossOriginIsolated, gpu: !!navigator.gpu, text: document.body.innerText.slice(0,120)})'
 //
 // The default expression reports cross-origin isolation, WebGPU, SharedArrayBuffer, JSPI and page text.
@@ -13,7 +14,7 @@ import WebKit
 
 let argv = CommandLine.arguments
 guard argv.count > 1, let url = URL(string: argv[1]) else {
-  print("usage: swift wkwebview-probe.swift <url> [seconds] [js]"); exit(2)
+  print("usage: wkwebview-probe.swift <url> [seconds] [js]"); exit(2)
 }
 let seconds = Double(argv.count > 2 ? argv[2] : "") ?? 60
 let expression = argv.count > 3 ? argv[3] : """

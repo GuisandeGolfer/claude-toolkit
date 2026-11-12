@@ -100,6 +100,11 @@ a major version of the thing it names.
   `/usr/bin/log show --predicate 'process == "kernel" AND eventMessage CONTAINS "clamshell"'` — `log` alone
   is a zsh builtin, so use `/usr/bin/log`. `(2026-10)`
 
+## Reference docs
+- `Apple_Developer_Program_License_Agreement_7MJ4WNXK5F.pdf` (132 pp, 2026-10-22): Apple's developer
+  terms. Section/attachment → page map and search recipe in the `apple-developer-agreement` skill
+  (`~/.claude/skills/apple-developer-agreement/SKILL.md`). Search with `pdftotext -layout <pdf> - | grep -n`.
+
 ## Security note
 `cdp.mjs eval` runs arbitrary JS in a live browser — against an authenticated profile it is a token/cookie
 exfiltration path. `site-recon.py` fetches and *follows* arbitrary URLs and `--save`s the bodies, so a
